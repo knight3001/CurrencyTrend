@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": false,
   "homepage": "https://knight3001.github.io/ReactPrac/",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:knight3001/CurrencyTrend.git"
+  },
+  "license": "BSD-3-Clause",
   "dependencies": {
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
