@@ -1,0 +1,22 @@
+@import url("../node_modules/bootstrap/dist/css/bootstrap.css");
+@import url("./css/bootstrap.icon-extra.min.css");
+
+#root {
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  text-align: center;
+}
+
+.hidden{
+  display: none;
+}
+
+
+
+
+@media screen and (max-width:415px){
+  
+}
