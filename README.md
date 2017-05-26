@@ -21,3 +21,8 @@ D3.js Snippets -- yoyo
 npm install --save-dev gh-pages
 npm run deploy (git must be a global command)
 ```
+
+## Foreign exchange rates and currency conversion API
+```sh
+http://fixer.io/
+```
