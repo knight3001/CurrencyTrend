@@ -6,7 +6,9 @@ import Trend from './trend/Trend';
 class App extends Component {
   render() {
     return (
-      <Trend />
+      <div className="App">
+        <Trend />
+      </div>
     );
   }
 }
