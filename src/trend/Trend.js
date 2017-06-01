@@ -3,8 +3,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 
-const baseUrl = "http://api.fixer.io/";
-const selectedBase = "AUD";
+const baseUrl = "http://apilayer.net/api/";
+const selectedBase = "USD"; //limit by free API
+
+const config = require('../config.json');
+const APIkey = config["APIkey"];
 
 class Cell extends Component {
     constructor(props) {
@@ -15,16 +18,21 @@ class Cell extends Component {
     }
 
     componentDidMount() {
-        axios.get(baseUrl + this.props.date + '?', {
+        axios.get(baseUrl + "/historical?", {
             params: {
-                base: selectedBase,
-                symbols: this.props.symbols.join(',')
+                access_key: APIkey,
+                date: this.props.date,
+                source: selectedBase,
+                currencies: this.props.symbols.join(','),
+                format: 1
             }
         })
             .then(response => {
-                this.setState({
-                    rates: response.data.rates
-                })
+                if (response.data.success) {
+                    this.setState({
+                        rates: response.data.quotes
+                    })
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -38,7 +46,7 @@ class Cell extends Component {
         //let a = moment(this.state.date);
         //let base = a.add(1,'day').format('YYYY-MMM-DD');
         for (let i = 0; i < symbols.length; i++) {
-            buf.push(<td key={symbols[i] + rates[i]}>{rates[symbols[i]]}</td>);
+            buf.push(<td key={symbols[i] + rates[i]}>{rates[selectedBase + symbols[i]]}</td>);
         }
         if (Object.keys(rates).length === 0) {
             return null;
@@ -64,18 +72,17 @@ class DateList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        let oldday = moment();
+        let today = moment();
         const len = parseInt(nextProps.datesize, 10);
         let dates = [];
         let i = 0;
         let newday, newdayweek;
         if (len > 0) {
             while (i < len) {
-                newday = oldday.add(-1, 'd');
+                newday = today.add(-i, 'd');
                 newdayweek = parseInt(newday.format('e'), 10);
                 if (newdayweek !== 0 && newdayweek !== 6) {
                     dates.push(newday.format('YYYY-MM-DD'));
-                    oldday = newday;
                     i += 1;
                 }
             }
@@ -113,7 +120,7 @@ class TrendTable extends Component {
         return (
             <table className="table table-bordered table-hover">
                 <thead>
-                    <tr><th colSpan={symbols.length + 1}>($1 AUD Base) {datesize} days trace back</th></tr>
+                    <tr><th colSpan={symbols.length + 1}>($1 USD Base) {datesize} days trace back</th></tr>
                     <tr>
                         <th>Date</th>
                         {symbolsItems}
@@ -161,7 +168,7 @@ class Trend extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            symbols: ['USD', 'EUR', 'CNY', 'HRK'],
+            symbols: ['AUD', 'EUR', 'CNY', 'HRK'],
             datesize: 0
         };
 
