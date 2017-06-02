@@ -7,7 +7,7 @@ const baseUrl = "https://openexchangerates.org/api/";
 const selectedBase = "USD"; //limit by free API
 const SymbolsAll = ['AFN', 'AUD', 'CHF', 'CNY', 'EUR', 'GBP', 'HRK', 'JPY'];
 
-const config = require('../config.json');
+const config = require('../keys.json');
 const APIkey = config["OpenExchangeApiKey"];
 
 class Cell extends Component {
@@ -21,7 +21,8 @@ class Cell extends Component {
     componentDidMount() {
         let url = "";
         let dateString = this.props.date.format('YYYY-MM-DD');
-        if (this.props.date === moment()) {
+        const today = moment().format('YYYY-MM-DD');
+        if (dateString === today) {
             url = baseUrl + "latest.json?";
         }
         else {
@@ -154,19 +155,20 @@ class UserForm extends Component {
     }
 
     handleClick(i) {
-        const symbol = SymbolsAll[i];
         this.props.onUserClick(
-            symbol
+            SymbolsAll[i]
         )
     }
 
     render() {
         let buf = [];
         const symbols = this.props.symbols;
+        let symbol;
         for (let i = 0; i < SymbolsAll.length; i++) {
+            symbol = SymbolsAll[i];
             buf.push(
-                <SymbolCheckbox index={i} symbol={SymbolsAll[i]} key={i} 
-                    checked={(symbols.indexOf(SymbolsAll[i]) > -1? true : false)} 
+                <SymbolCheckbox index={i} symbol={symbol} key={i} 
+                    checked={(symbols.indexOf(symbol) > -1? true : false)} 
                     onChange={() => this.handleClick(i)}
                     />
             );
@@ -240,11 +242,12 @@ class Trend extends Component {
 
     handleUserClick(symbol){
         let symbols = this.state.symbols;
-        if(symbols.indexOf(symbol) < 0){
+        let index = symbols.indexOf(symbol);
+        if(index < 0){
             symbols.push(symbol);
         }
         else{
-            symbols.pop(symbol);
+            symbols.splice(index,1);
         }
         this.setState({
             symbols: symbols
