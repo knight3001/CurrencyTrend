@@ -5,6 +5,7 @@ import moment from 'moment';
 
 const baseUrl = "https://openexchangerates.org/api/";
 const selectedBase = "USD"; //limit by free API
+const SymbolsAll = ['AFN', 'AUD', 'CHF', 'CNY', 'EUR', 'GBP', 'HRK', 'JPY'];
 
 const config = require('../config.json');
 const APIkey = config["OpenExchangeApiKey"];
@@ -29,8 +30,7 @@ class Cell extends Component {
         axios.get(url, {
             params: {
                 app_id: APIkey,
-                base: selectedBase,
-                symbols: this.props.symbols.join(',')
+                base: selectedBase
             }
         })
             .then(response => {
@@ -149,24 +149,74 @@ class UserForm extends Component {
 
     handleChange() {
         this.props.onUserInput(
-            (this.datesize.value > 30? 30 : this.datesize.value)
+            (this.datesize.value > 30 ? 30 : this.datesize.value)
+        )
+    }
+
+    handleClick(i) {
+        const symbol = SymbolsAll[i];
+        this.props.onUserClick(
+            symbol
         )
     }
 
     render() {
+        let buf = [];
+        const symbols = this.props.symbols;
+        for (let i = 0; i < SymbolsAll.length; i++) {
+            buf.push(
+                <SymbolCheckbox index={i} symbol={SymbolsAll[i]} key={i} 
+                    checked={(symbols.indexOf(SymbolsAll[i]) > -1? true : false)} 
+                    onChange={() => this.handleClick(i)}
+                    />
+            );
+        }
+
         return (
             <form className="form-horizontal">
-                <fieldset >
+                <fieldset>
                     <div className="form-group">
-                        <label htmlFor="playerX" className="col-sm-3 control-label">Trace Days</label>
+                        <label htmlFor="datesize" className="col-sm-2 control-label">Trace Days</label>
                         <div className="input-group col-sm-2">
                             <input type="number" min="1" max="30" className="form-control" id="datesize" placeholder="1-30" maxLength="10"
                                 value={this.props.datesize} ref={(input) => this.datesize = input} onChange={this.handleChange} />
                         </div>
                     </div>
+                    <div className="form-group">
+                        <label htmlFor="symbols" className="col-sm-2 control-label">Exchange Symbols</label>
+                        <div className="input-group col-sm-5">
+                            {buf}
+                        </div>
+                    </div>
                 </fieldset>
             </form>
         );
+    }
+}
+
+class SymbolCheckbox extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render(){
+        const id = "symbols-" + this.props.index;
+        const symbol = this.props.symbol;
+        const checked = this.props.checked;
+        return (
+            <div style={{float:"left", marginRight:"10px", marginBottom:"10px"}}>
+                <input type="checkbox" id={id} className="fancy-checkbox" onChange={() => this.props.onChange()} checked={checked} />
+                <div className="btn-group">
+                    <label htmlFor={id} className="btn btn-primary">
+                        <span className="glyphicon glyphicon-ok"></span>
+                        <span> </span>
+                    </label>
+                    <label htmlFor={id} className="btn btn-default active">
+                        {symbol}
+                    </label>
+                </div>
+            </div>
+        )
     }
 }
 
@@ -179,11 +229,25 @@ class Trend extends Component {
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
+        this.handleUserClick = this.handleUserClick.bind(this);
     }
 
     handleUserInput(datesize) {
         this.setState({
             datesize: datesize
+        })
+    }
+
+    handleUserClick(symbol){
+        let symbols = this.state.symbols;
+        if(symbols.indexOf(symbol) < 0){
+            symbols.push(symbol);
+        }
+        else{
+            symbols.pop(symbol);
+        }
+        this.setState({
+            symbols: symbols
         })
     }
 
@@ -195,6 +259,8 @@ class Trend extends Component {
                 <UserForm
                     datesize={this.state.datesize}
                     onUserInput={this.handleUserInput}
+                    onUserClick={this.handleUserClick}
+                    symbols={symbols}
                 />
                 <TrendTable
                     symbols={symbols}

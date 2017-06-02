@@ -22,3 +22,27 @@ table th,td{
 @media screen and (max-width:415px){
   
 }
+
+/* Bootstrap Checkbox Styles */
+.fancy-checkbox {
+    display: none;
+}
+
+.fancy-checkbox + .btn-group > label span {
+    width: 20px;
+}
+
+.fancy-checkbox + .btn-group > label span:first-child {
+    display: none;
+}
+.fancy-checkbox + .btn-group > label span:last-child {
+    display: inline-block;   
+}
+
+.fancy-checkbox:checked + .btn-group > label span:first-child {
+    display: inline-block;
+}
+.fancy-checkbox:checked + .btn-group > label span:last-child {
+    display: none;   
+}
+/* Bootstrap Checkbox Styles */
