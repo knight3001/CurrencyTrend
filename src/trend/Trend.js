@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 
-const baseUrl = "http://apilayer.net/api/";
+const baseUrl = "https://openexchangerates.org/api/";
 const selectedBase = "USD"; //limit by free API
 
 const config = require('../config.json');
-const APIkey = config["APIkey"];
+const APIkey = config["OpenExchangeApiKey"];
 
 class Cell extends Component {
     constructor(props) {
@@ -18,19 +18,25 @@ class Cell extends Component {
     }
 
     componentDidMount() {
-        axios.get(baseUrl + "/historical?", {
+        let url = "";
+        let dateString = this.props.date.format('YYYY-MM-DD');
+        if (this.props.date === moment()) {
+            url = baseUrl + "latest.json?";
+        }
+        else {
+            url = baseUrl + "historical/" + dateString + ".json?"
+        }
+        axios.get(url, {
             params: {
-                access_key: APIkey,
-                date: this.props.date,
-                source: selectedBase,
-                currencies: this.props.symbols.join(','),
-                format: 1
+                app_id: APIkey,
+                base: selectedBase,
+                symbols: this.props.symbols.join(',')
             }
         })
             .then(response => {
-                if (response.data.success) {
+                if (response.status === 200) {
                     this.setState({
-                        rates: response.data.quotes
+                        rates: response.data.rates
                     })
                 }
             })
@@ -43,10 +49,11 @@ class Cell extends Component {
         const rates = this.state.rates;
         const symbols = this.props.symbols;
         let buf = [];
+        const dateDisplay = this.props.date.format('YYYY-MMM-DD');
         //let a = moment(this.state.date);
         //let base = a.add(1,'day').format('YYYY-MMM-DD');
         for (let i = 0; i < symbols.length; i++) {
-            buf.push(<td key={symbols[i] + rates[i]}>{rates[selectedBase + symbols[i]]}</td>);
+            buf.push(<td key={symbols[i] + rates[i]}>{rates[symbols[i]]}</td>);
         }
         if (Object.keys(rates).length === 0) {
             return null;
@@ -54,7 +61,7 @@ class Cell extends Component {
         else {
             return (
                 <tr>
-                    <td>{moment(this.props.date).format('YYYY-MMM-DD')}</td>
+                    <td>{dateDisplay}</td>
                     {buf}
                 </tr>
             )
@@ -72,19 +79,18 @@ class DateList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        let today = moment();
         const len = parseInt(nextProps.datesize, 10);
         let dates = [];
         let i = 0;
-        let newday, newdayweek;
+        let newday;
         if (len > 0) {
             while (i < len) {
-                newday = today.add(-i, 'd');
-                newdayweek = parseInt(newday.format('e'), 10);
-                if (newdayweek !== 0 && newdayweek !== 6) {
-                    dates.push(newday.format('YYYY-MM-DD'));
-                    i += 1;
-                }
+                newday = moment().add(-i, 'd');
+                //newdayweek = parseInt(newday.format('e'), 10);
+                //if (newdayweek !== 0 && newdayweek !== 6) {
+                dates.push(newday);
+                i += 1;
+                //}
             }
             this.setState({
                 dates: dates
@@ -143,7 +149,7 @@ class UserForm extends Component {
 
     handleChange() {
         this.props.onUserInput(
-            this.datesize.value
+            (this.datesize.value > 30? 30 : this.datesize.value)
         )
     }
 
