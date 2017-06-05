@@ -258,17 +258,24 @@ class Trend extends Component {
         const symbols = this.state.symbols;
         const datesize = this.state.datesize;
         return (
-            <div className="col-xs-12 col-sm-12 col-md-8 col-md-offset-2">
-                <UserForm
-                    datesize={this.state.datesize}
-                    onUserInput={this.handleUserInput}
-                    onUserClick={this.handleUserClick}
-                    symbols={symbols}
-                />
-                <TrendTable
-                    symbols={symbols}
-                    datesize={datesize}
-                />
+            <div className="panel panel-primary">
+                <div className="panel-heading"><h3 className="panel-title">Latest Currency Exchange Rate</h3></div>
+                <div className="panel-body">
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-12 col-md-8 col-md-offset-2">
+                            <UserForm
+                                datesize={this.state.datesize}
+                                onUserInput={this.handleUserInput}
+                                onUserClick={this.handleUserClick}
+                                symbols={symbols}
+                            />
+                            <TrendTable
+                                symbols={symbols}
+                                datesize={datesize}
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }

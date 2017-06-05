@@ -13,11 +13,18 @@
 .hidden{
   display: none;
 }
+.clear{
+  clear: both;
+}
 
 table th,td{
   text-align: center;
 }
 
+.header{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
 
 @media screen and (max-width:415px){
   
