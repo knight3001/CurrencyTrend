@@ -8,6 +8,8 @@ import {
 import Trend from './trend/Trend';
 import History from './history/History';
 
+import {BaseUrl} from './globals';
+
 const ListItemLink = ({ to, text }) => (
   <Route exact path={to} children={({ match }) => (
     <li role="presentation" className={match ? 'active' : ''}>
@@ -21,15 +23,15 @@ const BasicRouter = () => (
     <div className="App">
       <div className="header col-md-4 col-md-offset-4">
         <ul className="nav nav-pills">
-          <ListItemLink to="/CurrencyTrend/" text="Current Rates" />
-          <ListItemLink to="/CurrencyTrend/history/" text="Historical Data" />
+          <ListItemLink to={BaseUrl} text="Current Rates" />
+          <ListItemLink to={BaseUrl + "history/"} text="Historical Data" />
         </ul>
       </div>
 
       <div className="clear"></div>
       
-      <Route exact path="/CurrencyTrend/" component={Trend}/>
-      <Route exact path="/CurrencyTrend/history/" component={History}/>
+      <Route exact path={BaseUrl} component={Trend}/>
+      <Route exact path={BaseUrl + "history/"} component={History}/>
     </div>
   </Router>
 )

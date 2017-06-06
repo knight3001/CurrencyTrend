@@ -3,12 +3,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 
-const baseUrl = "https://openexchangerates.org/api/";
+import {ApiUrl, SymbolsAll} from '../globals';
 const selectedBase = "USD"; //limit by free API
-const SymbolsAll = ['AFN', 'AUD', 'CHF', 'CNY', 'EUR', 'GBP', 'HRK', 'JPY'];
-
 const config = require('../keys.json');
 const APIkey = config["OpenExchangeApiKey"];
+
 
 class Cell extends Component {
     constructor(props) {
@@ -23,10 +22,10 @@ class Cell extends Component {
         let dateString = this.props.date.format('YYYY-MM-DD');
         const today = moment().format('YYYY-MM-DD');
         if (dateString === today) {
-            url = baseUrl + "latest.json?";
+            url = ApiUrl + "latest.json?";
         }
         else {
-            url = baseUrl + "historical/" + dateString + ".json?"
+            url = ApiUrl + "historical/" + dateString + ".json?"
         }
         axios.get(url, {
             params: {
