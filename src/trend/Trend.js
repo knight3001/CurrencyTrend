@@ -225,7 +225,7 @@ class Trend extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            symbols: ['AUD', 'EUR', 'CNY', 'HRK'],
+            symbols: ['AUD', 'CHF', 'CNY', 'NOK'],
             datesize: 0
         };
 

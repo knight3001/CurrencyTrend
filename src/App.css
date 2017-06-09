@@ -53,3 +53,7 @@ table th,td{
     display: none;   
 }
 /* Bootstrap Checkbox Styles */
+
+.axis .domain {
+  //display: none;
+}
