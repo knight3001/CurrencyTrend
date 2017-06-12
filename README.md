@@ -15,6 +15,8 @@ npm   -- egamma
 
 D3.js Snippets -- yoyo
 
+ESLint  -- Dirk Baeumer
+
 ## Deploy to GitHub Pages
 
 ```sh

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import ScatterPlot from './ScatterPlot';
 
 const styles = {
-  width   : 500,
-  height  : 300,
-  padding : 30,
+    width: 500,
+    height: 300,
+    padding: 30,
 };
 
 // The number of data points for the chart.
@@ -15,20 +15,20 @@ const randomNum = () => Math.floor(Math.random() * 1000);
 
 // A function that creates an array of 50 elements of (x, y) coordinates.
 const randomDataSet = () => {
-  return Array.apply(null, {length: numDataPoints}).map(() => [randomNum(), randomNum()]);
+    return Array.apply(null, { length: numDataPoints }).map(() => [randomNum(), randomNum()]);
 }
 
 class Chart extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            data: randomDataSet() 
+        this.state = {
+            data: randomDataSet()
         };
     }
 
     randomizeData() {
-        this.setState({ 
-            data: randomDataSet() 
+        this.setState({
+            data: randomDataSet()
         });
     }
 
@@ -39,7 +39,7 @@ class Chart extends Component {
                 <ScatterPlot {...this.state} {...styles} />
                 <div className="controls">
                     <button className="btn randomize" onClick={() => this.randomizeData()}>
-                    Randomize Data
+                        Randomize Data
                     </button>
                 </div>
             </div>

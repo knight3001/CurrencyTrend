@@ -169,7 +169,7 @@ class UserForm extends Component {
                 <SymbolCheckbox index={i} symbol={symbol} key={i} 
                     checked={(symbols.indexOf(symbol) > -1? true : false)} 
                     onChange={() => this.handleClick(i)}
-                    />
+                />
             );
         }
 
@@ -209,7 +209,7 @@ class SymbolCheckbox extends Component {
                 <input type="checkbox" id={id} className="fancy-checkbox" onChange={() => this.props.onChange()} checked={checked} />
                 <div className="btn-group">
                     <label htmlFor={id} className="btn btn-primary">
-                        <span className="glyphicon glyphicon-ok"></span>
+                        <span className="glyphicon glyphicon-ok" />
                         <span> </span>
                     </label>
                     <label htmlFor={id} className="btn btn-default active">

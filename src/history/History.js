@@ -40,9 +40,9 @@ class SvgChart extends Component {
     componentDidUpdate() {
         this.createBarChart();
     }
-   
-    createBarChart(){
-        const margin = {top: 20, right: 20, bottom: 30, left: 40};
+
+    createBarChart() {
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
         const colorRange = ["#95ffc7", "#eb9909", "#ffcccc", "#0eadca", "#fef65b", "#50e3c2", "#ff3737"];
         const width = this.props.width - margin.left - margin.right;
         const height = this.props.height - margin.top - margin.bottom;
@@ -51,7 +51,7 @@ class SvgChart extends Component {
         let node = this.node;
         let svg = d3.select(node);
         let outerG = svg.append("g").attr("transform", translate);
-        
+
         const x0 = d3.scaleBand()
             .rangeRound([0, width])
             .paddingInner(0.1);
@@ -68,42 +68,42 @@ class SvgChart extends Component {
         const tip = d3Tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
-            .html(function(d) {
+            .html(function (d) {
                 return "<strong>Rate In " + d.key + " $</strong> <span style='color:red'>" + d.value.toFixed(4) + "</span>";
             })
-       
+
         svg.call(tip);
 
-        d3.csv(myData, function(d, i, columns) {
+        d3.csv(myData, function (d, i, columns) {
             for (var j = 1, n = columns.length; j < n; ++j) {
                 d[columns[j]] = +d[columns[j]];
             }
             console.log(d);
             return d;
-        }, function(error, data) {
-            if (error){ 
+        }, function (error, data) {
+            if (error) {
                 throw error;
             }
             const keys = data.columns.slice(1);
 
-            x0.domain(data.map(function(d) { return d.CurrencyCode; }));
+            x0.domain(data.map(function (d) { return d.CurrencyCode; }));
             x1.domain(keys).rangeRound([0, x0.bandwidth()]);
-            y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
+            y.domain([0, d3.max(data, function (d) { return d3.max(keys, function (key) { return d[key]; }); })]).nice();
 
             outerG.append("g")
                 .selectAll("g")
                 .data(data)
                 .enter().append("g")
-                .attr("transform", function(d) { return "translate(" + x0(d.CurrencyCode) + ",0)"; })
+                .attr("transform", function (d) { return "translate(" + x0(d.CurrencyCode) + ",0)"; })
                 .selectAll("rect")
-                .data(function(d) { return keys.map(function(key) { return {key: key, value: d[key]}; }); })
+                .data(function (d) { return keys.map(function (key) { return { key: key, value: d[key] }; }); })
                 .enter().append("rect")
-                .attr("x", function(d) { return x1(d.key); })
-                .attr("y", function(d) { return y(d.value); })
+                .attr("x", function (d) { return x1(d.key); })
+                .attr("y", function (d) { return y(d.value); })
                 .attr("width", x1.bandwidth())
-                .attr("height", function(d) { return height - y(d.value); })
-                .attr("fill", function(d) { return z(d.key); })
-                .attr("class", function(d) { return "bar " + d.key; })
+                .attr("height", function (d) { return height - y(d.value); })
+                .attr("fill", function (d) { return z(d.key); })
+                .attr("class", function (d) { return "bar " + d.key; })
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide)
 
@@ -131,7 +131,7 @@ class SvgChart extends Component {
                 .selectAll("g")
                 .data(keys.slice().reverse())
                 .enter().append("g")
-                .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
 
             legend.append("rect")
                 .attr("x", width - 19)
@@ -143,14 +143,14 @@ class SvgChart extends Component {
                 .attr("x", width - 24)
                 .attr("y", 9.5)
                 .attr("dy", "0.32em")
-                .text(function(d) { return d; });
+                .text(function (d) { return d; });
         });
     }
-   
+
     render() {
         return (
             <svg ref={node => this.node = node}
-                 width={this.props.width} height={this.props.height}>
+                width={this.props.width} height={this.props.height}>
             </svg>
         )
     }
