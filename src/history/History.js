@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import myData from './yeardata.csv';
-
-var d3 = require("d3");
+import * as d3 from "d3";
+import * as d3Tip from "d3-tip";
 
 class History extends Component {
     constructor(props) {
@@ -40,14 +40,16 @@ class SvgChart extends Component {
     componentDidUpdate() {
         this.createBarChart();
     }
-
+   
     createBarChart(){
-        const node = this.node;
-        let svg = d3.select(node);
         const margin = {top: 20, right: 20, bottom: 30, left: 40};
+        const colorRange = ["#95ffc7", "#eb9909", "#ffcccc", "#0eadca", "#fef65b", "#50e3c2", "#ff3737"];
         const width = this.props.width - margin.left - margin.right;
         const height = this.props.height - margin.top - margin.bottom;
         const translate = "translate(" + margin.left + "," + margin.top + ")";
+
+        let node = this.node;
+        let svg = d3.select(node);
         let outerG = svg.append("g").attr("transform", translate);
         
         const x0 = d3.scaleBand()
@@ -61,9 +63,17 @@ class SvgChart extends Component {
             .rangeRound([height, 0]);
 
         const z = d3.scaleOrdinal()
-            .range(["#95ffc7", "#e6f0fa", "#ffcccc", "#0eadca", "#fef65b", "#50e3c2", "#ff3737"]);
+            .range(colorRange);
 
-        
+        const tip = d3Tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+                return "<strong>Rate In " + d.key + " $</strong> <span style='color:red'>" + d.value.toFixed(4) + "</span>";
+            })
+       
+        svg.call(tip);
+
         d3.csv(myData, function(d, i, columns) {
             for (var j = 1, n = columns.length; j < n; ++j) {
                 d[columns[j]] = +d[columns[j]];
@@ -74,7 +84,7 @@ class SvgChart extends Component {
             if (error){ 
                 throw error;
             }
-            var keys = data.columns.slice(1);
+            const keys = data.columns.slice(1);
 
             x0.domain(data.map(function(d) { return d.CurrencyCode; }));
             x1.domain(keys).rangeRound([0, x0.bandwidth()]);
@@ -92,7 +102,10 @@ class SvgChart extends Component {
                 .attr("y", function(d) { return y(d.value); })
                 .attr("width", x1.bandwidth())
                 .attr("height", function(d) { return height - y(d.value); })
-                .attr("fill", function(d) { return z(d.key); });
+                .attr("fill", function(d) { return z(d.key); })
+                .attr("class", function(d) { return "bar " + d.key; })
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide)
 
             outerG.append("g")
                 .attr("class", "axis")
@@ -111,7 +124,7 @@ class SvgChart extends Component {
                 .attr("text-anchor", "start")
                 .text("Exchange Rate ($1 USD)");
 
-            var legend = outerG.append("g")
+            let legend = outerG.append("g")
                 .attr("font-family", "sans-serif")
                 .attr("font-size", 10)
                 .attr("text-anchor", "end")
