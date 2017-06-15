@@ -1,30 +1,94 @@
 import React, { Component } from 'react';
-import myData from './yeardata.csv';
+
 import * as d3 from "d3";
 import * as d3Tip from "d3-tip";
+
+import myData from './yeardata.csv';
+import { SymbolsAll, SymbolCheckbox } from '../globals';
 
 class History extends Component {
     constructor(props) {
         super(props);
         this.state = {
             width: 960,
-            height: 500
+            height: 500,
+            symbols: ['AUD', 'CHF', 'CNY', 'NOK']
         }
+        this.handleUserClick = this.handleUserClick.bind(this);
+    }
+
+    handleUserClick(symbol) {
+        let symbols = this.state.symbols;
+        let index = symbols.indexOf(symbol);
+        if (index < 0) {
+            symbols.push(symbol);
+        }
+        else {
+            symbols.splice(index, 1);
+        }
+        this.setState({
+            symbols: symbols
+        })
     }
 
     render() {
+        const symbols = this.state.symbols;
         return (
             <div className="panel panel-success">
                 <div className="panel-heading"><h3 className="panel-title">Historical Currency Exchange Rate</h3></div>
                 <div className="panel-body">
                     <div className="row">
-                        <div className="col-xs-12 col-sm-12 col-md-12">
+                        <div className="col-xs-12 col-sm-12 col-md-8 col-md-offset-2">
+                            <UserForm
+                                onUserClick={this.handleUserClick}
+                                symbols={symbols}
+                            />
                             <SvgChart {...this.state} />
                         </div>
                     </div>
                 </div>
             </div>
         )
+    }
+}
+
+class UserForm extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    handleClick(i) {
+        this.props.onUserClick(
+            SymbolsAll[i]
+        )
+    }
+
+    render() {
+        let buf = [];
+        const symbols = this.props.symbols;
+        let symbol;
+        for (let i = 0; i < SymbolsAll.length; i++) {
+            symbol = SymbolsAll[i];
+            buf.push(
+                <SymbolCheckbox index={i} symbol={symbol} key={i}
+                    checked={(symbols.indexOf(symbol) > -1 ? true : false)}
+                    onChange={() => this.handleClick(i)}
+                />
+            );
+        }
+
+        return (
+            <form className="form-horizontal">
+                <fieldset>
+                    <div className="form-group">
+                        <label htmlFor="symbols" className="col-sm-2 control-label">Exchange Symbols</label>
+                        <div className="input-group col-sm-5">
+                            {buf}
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        );
     }
 }
 
@@ -38,10 +102,19 @@ class SvgChart extends Component {
         this.createBarChart();
     }
     componentDidUpdate() {
+        this.clearBarChart();
         this.createBarChart();
     }
 
+    clearBarChart() {
+        let node = this.node;
+        let svg = d3.select(node);
+        svg.selectAll("*")
+            .remove();
+    }
+
     createBarChart() {
+        const symbols = this.props.symbols;
         const margin = { top: 20, right: 20, bottom: 30, left: 40 };
         const colorRange = ["#95ffc7", "#eb9909", "#ffcccc", "#0eadca", "#fef65b", "#50e3c2", "#ff3737"];
         const width = this.props.width - margin.left - margin.right;
@@ -53,7 +126,7 @@ class SvgChart extends Component {
         let outerG = svg.append("g").attr("transform", translate);
 
         const x0 = d3.scaleBand()
-            .rangeRound([0, width])
+            .rangeRound([0, width - 50])
             .paddingInner(0.1);
 
         const x1 = d3.scaleBand()
@@ -78,21 +151,24 @@ class SvgChart extends Component {
             for (var j = 1, n = columns.length; j < n; ++j) {
                 d[columns[j]] = +d[columns[j]];
             }
-            console.log(d);
             return d;
         }, function (error, data) {
             if (error) {
                 throw error;
             }
-            const keys = data.columns.slice(1);
+            if(symbols.length === 0){
+                return;
+            }
+            const filterdData = data.filter(function (d) { return symbols.indexOf(d.CurrencyCode) > -1; });
+            const keys = Object.keys(filterdData[0]).filter(function (key) { return key !== "CurrencyCode"; });
 
-            x0.domain(data.map(function (d) { return d.CurrencyCode; }));
+            x0.domain(filterdData.map(function (d) { return d.CurrencyCode; }));
             x1.domain(keys).rangeRound([0, x0.bandwidth()]);
-            y.domain([0, d3.max(data, function (d) { return d3.max(keys, function (key) { return d[key]; }); })]).nice();
+            y.domain([0, d3.max(filterdData, function (d) { return d3.max(keys, function (key) { return d[key]; }); })]).nice();
 
             outerG.append("g")
                 .selectAll("g")
-                .data(data)
+                .data(filterdData)
                 .enter().append("g")
                 .attr("transform", function (d) { return "translate(" + x0(d.CurrencyCode) + ",0)"; })
                 .selectAll("rect")

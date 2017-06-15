@@ -44,7 +44,7 @@
         "constructor-super": "warn",
         "valid-typeof": "warn",
         "indent": [
-            "error",
+            "warn",
             4
         ]
     }

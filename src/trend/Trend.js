@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
 
-import {ApiUrl, SymbolsAll} from '../globals';
+import { ApiUrl, SymbolsAll, SymbolCheckbox } from '../globals';
 const selectedBase = "USD"; //limit by free API
 const config = require('../keys.json');
 const APIkey = config["OpenExchangeApiKey"];
@@ -195,33 +195,7 @@ class UserForm extends Component {
     }
 }
 
-class SymbolCheckbox extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render(){
-        const id = "symbols-" + this.props.index;
-        const symbol = this.props.symbol;
-        const checked = this.props.checked;
-        return (
-            <div style={{float:"left", marginRight:"10px", marginBottom:"10px"}}>
-                <input type="checkbox" id={id} className="fancy-checkbox" onChange={() => this.props.onChange()} checked={checked} />
-                <div className="btn-group">
-                    <label htmlFor={id} className="btn btn-primary">
-                        <span className="glyphicon glyphicon-ok" />
-                        <span> </span>
-                    </label>
-                    <label htmlFor={id} className="btn btn-default active">
-                        {symbol}
-                    </label>
-                </div>
-            </div>
-        )
-    }
-}
-
-class Trend extends Component {
+export class Trend extends Component {
     constructor(props) {
         super(props);
         this.state = {
