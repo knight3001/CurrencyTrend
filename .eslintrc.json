@@ -45,7 +45,10 @@
         "valid-typeof": "warn",
         "indent": [
             "warn",
-            4
+            4,
+            {
+                "SwitchCase": 1
+            }
         ]
     }
 }
