@@ -7,6 +7,7 @@ import {
 
 import Trend from './trend/Trend';
 import History from './history/History';
+import Store from './redux/index';
 
 import { BaseUrl } from './globals';
 
@@ -25,6 +26,7 @@ const BasicRouter = () => (
                 <ul className="nav nav-pills">
                     <ListItemLink to={BaseUrl} text="Current Rates" />
                     <ListItemLink to={BaseUrl + "history/"} text="Historical Data" />
+                    <ListItemLink to={BaseUrl + "redux/"} text="Redux" />
                 </ul>
             </div>
 
@@ -32,6 +34,7 @@ const BasicRouter = () => (
 
             <Route exact path={BaseUrl} component={Trend} />
             <Route exact path={BaseUrl + "history/"} component={History} />
+            <Route exact path={BaseUrl + "redux/"} component={Store} />
         </div>
     </Router>
 )

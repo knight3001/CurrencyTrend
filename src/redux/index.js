@@ -1,41 +1,49 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { persistState } from 'redux-devtools';
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
-import todoApp from './reducers';
+import React, { Component } from 'react'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
 
-import App from './components/App';
-import DevTools from './containers/DevTools';
+import rootReducer from './reducers/index'
+import App from './components/App'
 
-const enhancer = compose(
-    applyMiddleware(thunk),
-    DevTools.instrument(),
-    persistState(
-        window.location.href.match(
-            /[?&]debug_session=([^&#]+)\b/
+import {
+    addTodo,
+    toggleTodo,
+    setVisibilityFilter
+} from './actions/TodoActions';
+import * as types from './constants/ActionTypes';
+
+let store = createStore(rootReducer);
+
+export class Store extends Component {
+    render() {
+        return (
+            <Provider store={store}>
+                <App />
+            </Provider>
         )
-    )
-);
-
-export default function configureStore(initialState) {
-    const store = createStore(todoApp, initialState, enhancer);
-
-    if (module.hot) {
-        module.hot.accept('../reducers', () =>
-            store.replaceReducer(require('../reducers').default)
-        );
     }
-
-    return store;
 }
+export default Store;
 
-const store = configureStore();
 
-render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('root')
+// Log the initial state
+console.log(store.getState())
+
+// Every time the state changes, log it
+// Note that subscribe() returns a function for unregistering the listener
+let unsubscribe = store.subscribe(() =>
+    console.log(store.getState())
 )
+/*
+// Dispatch some actions
+store.dispatch(addTodo('Learn about actions'))
+store.dispatch(addTodo('Learn about reducers'))
+store.dispatch(addTodo('Learn about store'))
+store.dispatch(toggleTodo(0))
+store.dispatch(toggleTodo(1))
+store.dispatch(toggleTodo(0))
+store.dispatch(setVisibilityFilter(types.VisibilityFilters.SHOW_COMPLETED))
+
+// Stop listening to state updates
+unsubscribe()
+*/

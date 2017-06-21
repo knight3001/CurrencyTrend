@@ -1,20 +1,22 @@
 import * as types from '../constants/ActionTypes';
 
-export function addTodo(text) {
+let nextTodoId = 0;
+export const addTodo = text => {
     return {
         type: types.ADD_TODO,
+        id : nextTodoId++,
         text
     };
 }
 
-export function toggleTodo(id) {
+export const toggleTodo = id => {
     return {
         type: types.TOGGLE_TODO,
         id
     };
 }
 
-export function setVisibilityFilter(filter) {
+export const setVisibilityFilter = filter => {
     return {
         type: types.SET_VISIBILITY_FILTER,
         filter
