@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { createStore } from 'redux'
+import { createStore, compose } from 'redux'
+import { persistState } from 'redux-devtools';
 import { Provider } from 'react-redux'
 
 import rootReducer from './reducers/index'
-import App from './components/App'
+import TodoApp from './components/App'
+import DevTools from './containers/DevTools';
 
 import {
     addTodo,
@@ -12,20 +14,42 @@ import {
 } from './actions/TodoActions';
 import * as types from './constants/ActionTypes';
 
-let store = createStore(rootReducer);
+const enhancer = compose(
+    DevTools.instrument(),
+    persistState(
+        window.location.href.match(
+            /[?&]debug_session=([^&#]+)\b/
+        )
+    )
+);
+
+function configureStore(initialState) {
+    const store = createStore(
+        rootReducer, 
+        initialState, 
+        enhancer
+        /*window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()*/
+    );
+
+    return store;
+}
 
 export class Store extends Component {
     render() {
+        const store = configureStore();
         return (
             <Provider store={store}>
-                <App />
+                <div>
+                    <TodoApp />
+                    <DevTools />
+                </div>
             </Provider>
         )
     }
 }
 export default Store;
 
-
+/*
 // Log the initial state
 console.log(store.getState())
 
@@ -34,7 +58,7 @@ console.log(store.getState())
 let unsubscribe = store.subscribe(() =>
     console.log(store.getState())
 )
-/*
+
 // Dispatch some actions
 store.dispatch(addTodo('Learn about actions'))
 store.dispatch(addTodo('Learn about reducers'))
