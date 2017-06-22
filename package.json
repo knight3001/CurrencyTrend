@@ -20,7 +20,9 @@
     "react-router-dom": "^4.1.1",
     "d3": "^4.9.1",
     "d3-tip": "^0.7.1",
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.5.10",
+    "redux-thunk":"^2.2.0",
+    "redux-logger": "^3.0.6"
   },
   "devDependencies": {
     "gh-pages": "^1.0.0",
