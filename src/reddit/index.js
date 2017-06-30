@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 import React, { Component } from 'react'
 import thunkMiddleware from 'redux-thunk'
 import { createLogger } from 'redux-logger'
@@ -6,32 +8,36 @@ import { Provider } from 'react-redux'
 
 import { selectSubreddit, fetchPostsIfNeeded } from './actions/actions'
 import rootReducer from './reducers/reducers'
+import { logger, crashReporter } from './middleware'
+import AsyncApp from './containers/AsyncApp'
 
 const loggerMiddleware = createLogger()
 
-const store = createStore(
-    rootReducer,
-    applyMiddleware(
-        thunkMiddleware, // lets us dispatch() functions
-        loggerMiddleware // neat middleware that logs actions
+function configureStore(preloadedState) {
+    return createStore(
+        rootReducer,
+        preloadedState,
+        applyMiddleware(
+            thunkMiddleware, // lets us dispatch() functions
+            loggerMiddleware // neat middleware that logs actions
+        )
     )
-)
+}
 
-store.dispatch(selectSubreddit('reactjs'))
+/*store.dispatch(selectSubreddit('reactjs'))
 store
     .dispatch(fetchPostsIfNeeded('reactjs'))
-    .then(() => console.log(store.getState()))
+    .then(() => console.log(store.getState()))*/
 
+const store = configureStore();
 
 export class Reddit extends Component {
     render() {
         return (
             <Provider store={store}>
-                <div>
-                    
-                </div>
+                <AsyncApp />
             </Provider>
         )
     }
-}   
+}
 export default Reddit; 

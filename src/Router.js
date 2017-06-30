@@ -2,7 +2,8 @@ import React from 'react';
 import {
     BrowserRouter as Router,
     Route,
-    Link
+    Link,
+    browserHistory
 } from 'react-router-dom';
 
 import Trend from './trend/Trend';
