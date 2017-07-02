@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
     BrowserRouter as Router,
     Route,
@@ -21,25 +21,30 @@ const ListItemLink = ({ to, text }) => (
     )} />
 )
 
-const BasicRouter = () => (
-    <Router>
-        <div className="App">
-            <div className="header col-md-4 col-md-offset-4">
-                <ul className="nav nav-pills">
-                    <ListItemLink to={BaseUrl} text="Current Rates" />
-                    <ListItemLink to={BaseUrl + "history/"} text="Historical Data" />
-                    <ListItemLink to={BaseUrl + "redux/"} text="Redux" />
-                    <ListItemLink to={BaseUrl + "reddit/"} text="Reddit" />
-                </ul>
-            </div>
+class BasicRouter extends Component {
+    render() {
+        return (
+            <Router>
+                <div className="App">
+                    <div className="header col-md-4 col-md-offset-4">
+                        <ul className="nav nav-pills">
+                            <ListItemLink to={BaseUrl} text="Current Rates" />
+                            <ListItemLink to={BaseUrl + "history/"} text="Historical Data" />
+                            <ListItemLink to={BaseUrl + "redux/"} text="Redux" />
+                            <ListItemLink to={BaseUrl + "reddit/"} text="Reddit" />
+                        </ul>
+                    </div>
 
-            <div className="clear"></div>
+                    <div className="clear"></div>
 
-            <Route exact path={BaseUrl} component={Trend} />
-            <Route exact path={BaseUrl + "history/"} component={History} />
-            <Route exact path={BaseUrl + "redux/"} component={Store} />
-            <Route exact path={BaseUrl + "reddit/"} component={Reddit} />
-        </div>
-    </Router>
-)
+                    <Route exact path={BaseUrl} component={Trend} />
+                    <Route exact path={BaseUrl + "history/"} component={History} />
+                    <Route exact path={BaseUrl + "redux/"} component={Store} />
+                    <Route exact path={BaseUrl + "reddit/"} component={Reddit} />
+                </div>
+            </Router>
+        )
+    }
+}
+
 export default BasicRouter;
