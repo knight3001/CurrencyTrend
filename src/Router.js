@@ -3,9 +3,12 @@ import {
     BrowserRouter as Router,
     Route,
     Link,
-    browserHistory
+    browserHistory,
+    Redirect,
+    withRouter
 } from 'react-router-dom';
 
+import { AuthButton, PrivateRoute, Login } from './auth/auth';
 import Trend from './trend/Trend';
 import History from './history/History';
 import Store from './redux/index';
@@ -32,15 +35,17 @@ class BasicRouter extends Component {
                             <ListItemLink to={BaseUrl + "history/"} text="Historical Data" />
                             <ListItemLink to={BaseUrl + "redux/"} text="Redux" />
                             <ListItemLink to={BaseUrl + "reddit/"} text="Reddit" />
+                            <AuthButton />
                         </ul>
                     </div>
 
                     <div className="clear"></div>
 
                     <Route exact path={BaseUrl} component={Trend} />
-                    <Route exact path={BaseUrl + "history/"} component={History} />
-                    <Route exact path={BaseUrl + "redux/"} component={Store} />
-                    <Route exact path={BaseUrl + "reddit/"} component={Reddit} />
+                    <Route path={BaseUrl + "login/"} component={Login}/>
+                    <PrivateRoute path={BaseUrl + "history/"} component={History} />
+                    <Route path={BaseUrl + "redux/"} component={Store} />
+                    <PrivateRoute path={BaseUrl + "reddit/"} component={Reddit} />
                 </div>
             </Router>
         )

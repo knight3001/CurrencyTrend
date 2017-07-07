@@ -90,3 +90,12 @@ table th,td{
   top: 100%;
   left: 0;
 }
+
+.form-wrap{
+    width: 100%;
+    border: 1px solid #ededed;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    background-color: #fff;
+    padding: 40px 0;
+}
