@@ -91,6 +91,7 @@ table th,td{
   left: 0;
 }
 
+
 .form-wrap{
     width: 100%;
     border: 1px solid #ededed;
@@ -98,4 +99,27 @@ table th,td{
     box-shadow: 0 1px 3px rgba(0,0,0,.25);
     background-color: #fff;
     padding: 40px 0;
+}
+
+.form-error{
+    animation: shake 150ms ease-in-out;
+    background-color: #fb4f4f;
+    color: #fff;
+    padding: .5em 1em;
+    font-size: 1.1em;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(10px);
+  }
+  75% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
